@@ -25,18 +25,18 @@ use std::collections::HashSet;
  * it support genome and short and long illumina reads.
  *
  *
- * */
-
-
+ */
 
 fn main() {
 
     fastafile(args.fastafile_arg,  args.kmer_arg);
     fastqfile(args.fastqfile_arg, args.kmer_arg);
+    longreadfile(args.longreadfile_arg, args.kmer_arg)
 
 }
 
-fn fastafile(path: &str, kmer: usize) -> Result<(),&'static Vec<&str> {
+
+fn fastafile(path: &str, kmer: usize) -> Result<(),&'static Vec<&str>> {
     let file_open = File::open(&path);
     let header: Vec<&str> = vec![];
     let sequence:Vec<&str> = vec![];
@@ -85,14 +85,15 @@ fn fastafile(path: &str, kmer: usize) -> Result<(),&'static Vec<&str> {
     }
     for i in &hash_check.iter() {
         for j in &sequence.iter() {
-            let position:usize = sequence.iter().position(|stend| stend = i);
+            let position:usize = sequence.iter().position(|stend| stend == i);
             let final_end: usize = position+i.len();
+            hash_end.push(final_end)
     }
     }
 }
 
 
-fn longreadfile(path: &str, kmer: usize) -> Result<(),'static Vec<&str> {
+fn longread_file(path: &str, kmer: usize) -> Result<(),&'static Vec<&str>> {
     let file_open = File::open(&path);
     let header: Vec<&str> = vec![];
     let sequence:Vec<&str> = vec![];
@@ -147,6 +148,7 @@ fn longreadfile(path: &str, kmer: usize) -> Result<(),'static Vec<&str> {
         for j in &sequence.iter() {
             let position:usize = sequence.iter().position(|stend| stend = i);
             let final_end: usize = position+i.len();
+            hash_end.push(final_end)
     }
     }
 }
