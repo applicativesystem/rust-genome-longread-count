@@ -67,8 +67,6 @@ fn genome_file(path: &str, kmer: usize) -> Result<(),&'static Vec<&str>> {
     }
 
     let hash_check:Vec<&str> = vec![];
-    let has_start:Vec<usize> = vec![];
-    let hash_end:Vec<usize> = vec![];
 
     let file = File::open("kmeruniqe.txt");
     let hash_read = BufReader::new(file);
@@ -125,8 +123,6 @@ fn longread_file(path: &str, kmer: usize) -> Result<(),&'static Vec<&str>> {
     }
 
     let hash_check:Vec<&str> = vec![];
-    let has_start:Vec<usize> = vec![];
-    let hash_end:Vec<usize> = vec![];
 
     let file = File::open("kmeruniqe.txt");
     let hash_read = BufReader::new(file);
@@ -184,8 +180,6 @@ fn illumina_file(path: &str, kmer: usize) -> Result<(),&'static Vec<&str>> {
     }
 
     let hash_check:Vec<&str> = vec![];
-    let has_start:Vec<usize> = vec![];
-    let hash_end:Vec<usize> = vec![];
 
     let file = File::open("kmeruniqe.txt");
     let hash_read = BufReader::new(file);
