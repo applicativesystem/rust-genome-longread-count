@@ -2,9 +2,9 @@ mod args;
 use std::env::args;
 use std::fs::File;
 use std::io::Read;
-use args::kmeroriginArgs;
+use args::KmeroriginArgs;
 use clap::Parser;
-use std::io::{BufReader, BufRead};
+use std::io::BufReader;
 use std::collections::HashSet;
 
 /*
@@ -29,14 +29,13 @@ use std::collections::HashSet;
 
 fn main() {
 
-    fastafile(args.fastafile_arg,  args.kmers_arg);
-    fastqfile(args.fastqfile_arg, args.kmer_arg);
-    longreadfile(args.longreadfile_arg, args.kmer_arg)
-
+    let args:KmeroriginArgs = KmeroriginArgs::parse();
+    genome_file(args.fastafile_arg,  args.kmers_arg);
+    illumina_file(args.fastqfile_arg, args.kmer_arg);
+    longread_file(args.longreadfile, args.kmer_arg)
 }
 
-
-fn fastafile(path: &str, kmer: usize) -> Result<(),&'static Vec<&str>> {
+fn genome_file(path: &str, kmer: usize) -> Result<(),&'static Vec<&str>> {
     let file_open = File::open(&path);
     let header: Vec<&str> = vec![];
     let sequence:Vec<&str> = vec![];
@@ -79,14 +78,14 @@ fn fastafile(path: &str, kmer: usize) -> Result<(),&'static Vec<&str>> {
     }
     for &i in hash_check.iter() {
         for &j in sequence.iter() {
-            let position:usize = &j.position(|ststart| ststart == i);
-                hash_start.push(position);
+            let start_position:usize = &j.position(|ststart| ststart == i);
+                hash_start.push(&start_position);
             }
     }
     for &i in hash_check.iter() {
         for &j in sequence.iter() {
-            let position:usize = &j.position(|stend| stend == i);
-            let final_end: usize = position+i.len();
+            let end_position:usize = &j.position(|stend| stend == i);
+            let final_end: usize = end_position+i.len();
             hash_end.push(final_end)
     }
     }
@@ -110,6 +109,68 @@ fn longread_file(path: &str, kmer: usize) -> Result<(),&'static Vec<&str>> {
         header.push(&line[0])
     }
     if ! expect_line.starts_with("@") {
+        sequence.push(&expect_line)
+    }
+    }
+
+    let sequence_iter:Vec<&str> = vec![];
+
+    for i in 0..sequence.len() {
+        let intermediate: &str = sequence_iter[i];
+        for j in 0..intermediate.len() - &kmer {
+            sequence_iter.push(&intermediate[j..j+kmer])
+    }
+    }
+
+    let hash_kmer: HashSet<_> = sequence_iter.iter().collect();
+    let mut filew = File::create("kmerunique.txt");
+    for i in &sequence_iter {
+    filew.write_all(i.bytes())
+    }
+
+    let hash_check:Vec<&str> = vec![];
+    let has_start:Vec<usize> = vec![];
+    let hash_end:Vec<usize> = vec![];
+
+    let file = File::open("kmeruniqe.txt");
+    let hash_read = BufReader::new(file);
+    for i in hash_read.lines(){
+        let line = i.expect("empty line");
+        hash_check.push(i)
+    }
+    for &i in hash_check.iter() {
+        for &j in sequence.iter() {
+            let position:usize = &j.position(|ststart| ststart == i);
+                hash_start.push(position)
+            }
+    }
+    for &i in hash_check.iter() {
+        for &j in sequence.iter() {
+            let position:usize = &j.position(|stend| stend = i);
+            let final_end: usize = position+i.len();
+            hash_end.push(final_end)
+    }
+    }
+    Ok(())
+}
+
+
+fn illumina_file(path: &str, kmer: usize) -> Result<(),&'static Vec<&str>> {
+    let file_open = File::open(&path);
+    let header: Vec<&str> = vec![];
+    let sequence:Vec<&str> = vec![];
+    let file_read = BufReader::new(file_open);
+    for line in file_read.lines(){
+    let expect_line = line
+        .expect("line not present");
+    if expect_line.starts_with("@") {
+        let line:&str = expect_line.
+            split(" ")
+            .replace("@", "")
+            .collect();
+        header.push(&line[0])
+    }
+    if  expect_line.starts_with("A") || expect_line.starts_with("T") || expect_line.starts_with("G") || expect_line.starts_with("C") {
         sequence.push(&expect_line)
     }
     }

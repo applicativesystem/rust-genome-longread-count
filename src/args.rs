@@ -3,7 +3,7 @@ use clap::{Args, Parser, Subcommand};
 #[derive(Debug, Parser)]
 #[clap(author, version, about)]
 
-pub struct kmeroriginArgs {
+pub struct KmeroriginArgs {
     /// please provide the kmer to be searched for the origin
     pub kmer_arg: u32,
     /// please provide the path to be searched for the strings containing the kmer
