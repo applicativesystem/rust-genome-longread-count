@@ -1,6 +1,8 @@
 mod args;
 use std::env::args;
 use std::fs::File;
+use std::io::prelude::*;
+use std::io::Result;
 use std::io::Read;
 use args::KmeroriginArgs;
 use clap::Parser;
@@ -23,9 +25,7 @@ use std::collections::HashSet;
  * implementing a async programming later today.
  *
  * it support genome and short and long illumina reads.
- *
- *
- */
+ * */
 
 fn main() {
 
@@ -76,21 +76,17 @@ fn genome_file(path: &str, kmer: usize) -> Result<(),&'static Vec<&str>> {
         let line = i.expect("empty line");
         hash_check.push(i)
     }
-    for &i in hash_check.iter() {
-        for &j in sequence.iter() {
-            let start_position:usize = &j.position(|ststart| ststart == i);
-                hash_start.push(&start_position);
-            }
-    }
-    for &i in hash_check.iter() {
-        for &j in sequence.iter() {
-            let end_position:usize = &j.position(|stend| stend == i);
-            let final_end: usize = end_position+i.len();
-            hash_end.push(final_end)
-    }
-    }
+    for i in 0..sequence.len() {
+        for j in 0..hash_check.len() {
+        let has_store:Vec<_> = sequence[i].match_indices(hash_check[j]).collect();
+        let f = File::create("searchedhashes.txt");
+        for i in 0..has_Store.len(){
+            f.write_all(has_store[i].0.as_bytes(), has_store[i].1.as_bytes(), has_store[i].0+hash_check[j].len().as_bytes())
+        }
+      }
+   }
     Ok(())
-}
+} 
 
 
 fn longread_file(path: &str, kmer: usize) -> Result<(),&'static Vec<&str>> {
@@ -138,19 +134,16 @@ fn longread_file(path: &str, kmer: usize) -> Result<(),&'static Vec<&str>> {
         let line = i.expect("empty line");
         hash_check.push(i)
     }
-    for &i in hash_check.iter() {
-        for &j in sequence.iter() {
-            let position:usize = &j.position(|ststart| ststart == i);
-                hash_start.push(position)
-            }
-    }
-    for &i in hash_check.iter() {
-        for &j in sequence.iter() {
-            let position:usize = &j.position(|stend| stend = i);
-            let final_end: usize = position+i.len();
-            hash_end.push(final_end)
-    }
-    }
+
+    for i in 0..sequence.len() {
+        for j in 0..hash_check.len() {
+        let has_store:Vec<_> = sequence[i].match_indices(hash_check[j]).collect();
+        let f = File::create("searchedhashes.txt");
+        for i in 0..has_Store.len(){
+            f.write_all(has_store[i].0.as_bytes, has_store[i].1.as_bytes(), has_store[i].0+hash_check[j].len().as_bytes())
+        }
+      }
+   }
     Ok(())
 }
 
@@ -200,18 +193,15 @@ fn illumina_file(path: &str, kmer: usize) -> Result<(),&'static Vec<&str>> {
         let line = i.expect("empty line");
         hash_check.push(i)
     }
-    for &i in hash_check.iter() {
-        for &j in sequence.iter() {
-            let position:usize = &j.position(|ststart| ststart == i);
-                hash_start.push(position)
-            }
-    }
-    for &i in hash_check.iter() {
-        for &j in sequence.iter() {
-            let position:usize = &j.position(|stend| stend = i);
-            let final_end: usize = position+i.len();
-            hash_end.push(final_end)
-    }
-    }
+
+        for i in 0..sequence.len() {
+        for j in 0..hash_check.len() {
+        let has_store:Vec<_> = sequence[i].match_indices(hash_check[j]).collect();
+        let f = File::create("searchedhashes.txt");
+        for i in 0..has_store.len(){
+            f.write_all(has_store[i].0.as_bytes(), has_store[i].1.as_bytes(), has_store[i].0+hash_check[j].len().as_bytes())
+        }
+      }
+   }
     Ok(())
 }
