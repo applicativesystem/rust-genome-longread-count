@@ -29,7 +29,7 @@ use std::collections::HashSet;
 
 fn main() {
 
-    fastafile(args.fastafile_arg,  args.kmer_arg);
+    fastafile(args.fastafile_arg,  args.kmers_arg);
     fastqfile(args.fastqfile_arg, args.kmer_arg);
     longreadfile(args.longreadfile_arg, args.kmer_arg)
 
@@ -77,19 +77,20 @@ fn fastafile(path: &str, kmer: usize) -> Result<(),&'static Vec<&str>> {
         let line = i.expect("empty line");
         hash_check.push(i)
     }
-    for i in &hash_check.iter() {
-        for j in &sequence.iter() {
-            let position:usize = sequence.iter().position(|ststart| ststart == i);
-                hash_start.push(position)
+    for &i in hash_check.iter() {
+        for &j in sequence.iter() {
+            let position:usize = &j.position(|ststart| ststart == i);
+                hash_start.push(position);
             }
     }
-    for i in &hash_check.iter() {
-        for j in &sequence.iter() {
-            let position:usize = sequence.iter().position(|stend| stend == i);
+    for &i in hash_check.iter() {
+        for &j in sequence.iter() {
+            let position:usize = &j.position(|stend| stend == i);
             let final_end: usize = position+i.len();
             hash_end.push(final_end)
     }
     }
+    Ok(())
 }
 
 
@@ -138,17 +139,18 @@ fn longread_file(path: &str, kmer: usize) -> Result<(),&'static Vec<&str>> {
         let line = i.expect("empty line");
         hash_check.push(i)
     }
-    for i in &hash_check.iter() {
-        for j in &sequence.iter() {
-            let position:usize = sequence.iter().position(|ststart| ststart == i);
+    for &i in hash_check.iter() {
+        for &j in sequence.iter() {
+            let position:usize = &j.position(|ststart| ststart == i);
                 hash_start.push(position)
             }
     }
-    for i in &hash_check.iter() {
-        for j in &sequence.iter() {
-            let position:usize = sequence.iter().position(|stend| stend = i);
+    for &i in hash_check.iter() {
+        for &j in sequence.iter() {
+            let position:usize = &j.position(|stend| stend = i);
             let final_end: usize = position+i.len();
             hash_end.push(final_end)
     }
     }
+    Ok(())
 }
