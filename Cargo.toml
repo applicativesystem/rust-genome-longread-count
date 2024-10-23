@@ -6,3 +6,4 @@ edition = "2021"
 [dependencies]
 clap = "4.5.20"
 cmd_lib = "1.9.5"
+svg_fmt = "0.4.3"
