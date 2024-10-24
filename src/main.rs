@@ -7,6 +7,7 @@ use std::io::Read;
 use args::KmeroriginArgs;
 use clap::Parser;
 use std::io::BufReader;
+use tokio;
 use std::collections::HashSet;
 
 /*
@@ -30,12 +31,15 @@ use std::collections::HashSet;
 fn main() {
 
     let args:KmeroriginArgs = KmeroriginArgs::parse();
-    genome_file(args.fastafile_arg,  args.kmers_arg);
-    illumina_file(args.fastqfile_arg, args.kmer_arg);
-    longread_file(args.longreadfile, args.kmer_arg)
+    let genome = tokio::spawn(async{genome_file(args.fastafile_arg,  args.kmers_arg)});
+    let illumina = tokio::spawn(async{illumina_file(args.fastqfile_arg, args.kmer_arg)});
+    let longread = tokio::spawn(async{longread_file(args.longreadfile, args.kmer_arg)});
+  genome.await.unwarp();
+  illumina.await.unwarp();
+  longread.await.unwarp();
 }
 
-fn genome_file(path: &str, kmer: usize) -> Result<(),&'static Vec<&str>> {
+fn genome_file(path: &str, kmer: usize) -> Result<(),_> {
     let file_open = File::open(&path);
     let header: Vec<&str> = vec![];
     let sequence:Vec<&str> = vec![];
@@ -84,10 +88,10 @@ fn genome_file(path: &str, kmer: usize) -> Result<(),&'static Vec<&str>> {
       }
    }
     Ok(())
-} 
+}
 
 
-fn longread_file(path: &str, kmer: usize) -> Result<(),&'static Vec<&str>> {
+fn longread_file(path: &str, kmer: usize) -> Result<(),_> {
     let file_open = File::open(&path);
     let header: Vec<&str> = vec![];
     let sequence:Vec<&str> = vec![];
@@ -144,7 +148,7 @@ fn longread_file(path: &str, kmer: usize) -> Result<(),&'static Vec<&str>> {
 }
 
 
-fn illumina_file(path: &str, kmer: usize) -> Result<(),&'static Vec<&str>> {
+fn illumina_file(path: &str, kmer: usize) -> Result<(),_> {
     let file_open = File::open(&path);
     let header: Vec<&str> = vec![];
     let sequence:Vec<&str> = vec![];
