@@ -7,7 +7,6 @@ use std::io::Read;
 use args::KmeroriginArgs;
 use clap::Parser;
 use std::io::BufReader;
-use tokio;
 use std::collections::HashSet;
 
 /*
@@ -16,30 +15,22 @@ use std::collections::HashSet;
  *Date 2022-10-22
 
  * A kmer origin finding faster than the recent implementation of the recent implementation
- * Back to sequences: Find the origin of 𝑘-mers DOI: 10.21105/joss.07066.
- *
- * I implemented the rust async programming to index the kmer first over a window size and then
- * use that to make the set of the kmers, so that you have less search space and using that to
- * search the kmer in the file provided
- *
- * it only searchers for the unique hashes and their location. to make it even faster, i am also
- * implementing a async programming later today.
- *
+ * Back to sequences: Find the origin of 𝑘-mers DOI: 10.21105/joss.07066. In this RUST
+ * implementation I index the kmer first over a window size and then use that to make the
+ * set of the kmers, so that you have less search space and using that to
+ * search the kmer in the file provided. it only searchers for the unique hashes and their location.
  * it support genome and short and long illumina reads.
  * */
 
 fn main() {
 
     let args:KmeroriginArgs = KmeroriginArgs::parse();
-    let genome = tokio::spawn(async{genome_file(args.fastafile_arg,  args.kmers_arg)});
-    let illumina = tokio::spawn(async{illumina_file(args.fastqfile_arg, args.kmer_arg)});
-    let longread = tokio::spawn(async{longread_file(args.longreadfile, args.kmer_arg)});
-  genome.await.unwarp();
-  illumina.await.unwarp();
-  longread.await.unwarp();
+    genome_file(args.fastafile_arg,  args.kmers_arg);
+    illumina_file(args.fastqfile_arg, args.kmer_arg);
+    longread_file(args.longreadfile, args.kmer_arg)
 }
 
-fn genome_file(path: &str, kmer: usize) -> Result<(),_> {
+fn genome_file(path: &str, kmer: usize) -> Result<(),&'static Vec<&str>> {
     let file_open = File::open(&path);
     let header: Vec<&str> = vec![];
     let sequence:Vec<&str> = vec![];
@@ -91,7 +82,7 @@ fn genome_file(path: &str, kmer: usize) -> Result<(),_> {
 }
 
 
-fn longread_file(path: &str, kmer: usize) -> Result<(),_> {
+fn longread_file(path: &str, kmer: usize) -> Result<(),&'static Vec<&str>> {
     let file_open = File::open(&path);
     let header: Vec<&str> = vec![];
     let sequence:Vec<&str> = vec![];
@@ -148,7 +139,7 @@ fn longread_file(path: &str, kmer: usize) -> Result<(),_> {
 }
 
 
-fn illumina_file(path: &str, kmer: usize) -> Result<(),_> {
+fn illumina_file(path: &str, kmer: usize) -> Result<(),&'static Vec<&str>> {
     let file_open = File::open(&path);
     let header: Vec<&str> = vec![];
     let sequence:Vec<&str> = vec![];

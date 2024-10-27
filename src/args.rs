@@ -11,5 +11,5 @@ pub struct KmeroriginArgs {
     /// please provide the path to the fasta file to be searched for the string containing the kmer
     pub fastafile_arg: String,
     /// please provide the path to the longread file to be searched for containing the kmer
-    pub longread: String
+    pub longread: String,
 }

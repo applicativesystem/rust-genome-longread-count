@@ -8,3 +8,4 @@ clap = "4.5.20"
 cmd_lib = "1.9.5"
 svg_fmt = "0.4.3"
 tokio = "1.41.0"
+lsp_rs = { git = "https://github.com/smith61/rls_proto" }
