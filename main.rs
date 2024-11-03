@@ -1,10 +1,13 @@
 mod args;
+use std::env::args;
 use args::KmeroriginArgs;
 use clap::Parser;
 /*
 use std::fs::read_to_string;
 use std::io;
 use std::io::prelude::*;
+use args::KmeroriginArgs;
+use clap::Parser;
 use std::io::BufReader;
 use std::collections::HashSet;
 */
@@ -27,10 +30,10 @@ use std::collections::HashSet;
  * it support genome and short and long illumina reads.
  * */
 
-fn main()  {
+fn main ()  {
 
     let args = KmeroriginArgs::parse();
-    dbg!(args);
+    dbg!(args)
 }
 
 /*
