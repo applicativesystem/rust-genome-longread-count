@@ -1,4 +1,4 @@
-# rust-nuc-iter
+# rust-genome-longread-count
 
 - A kmer origin finding faster than the recent implementation of the recent implementation. Back to sequences: Find the origin of 𝑘-mers DOI: 10.21105/joss.07066.
 - output a table for the direct ingestion into any graphs. 
