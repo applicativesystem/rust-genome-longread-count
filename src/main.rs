@@ -8,7 +8,7 @@ use std::collections::HashSet;
 /*
  *Author Gaurav Sablok
  *Universitat Potsdam
- *Date 2022-10-22
+ *Date 2024-11-4
 
  * A kmer origin finding faster than the recent implementation of the recent implementation
  * Back to sequences: Find the origin of 𝑘-mers DOI: 10.21105/joss.07066.
