@@ -21,23 +21,15 @@ Options:
 ```
 ./target/debug/kmerorigin 4 ./sample-files/fastafile.fasta
 >seq1
-AGTCAGTC	TCAG	2	6
-AGTCAGTC	AGTC	0	4
-AGTCAGTC	GTCA	1	5
-AGTCAGTC	CAGT	3	7
-AGTCAGTT	AGTC	0	4
-AGTCAGTT	GTCA	1	5
-AGTCAGTT	TCAG	2	6
-AGTCAGTT	CAGT	3	7
+AGTCAGTC        AGTC    0       4
+AGTCAGTC        GTCA    1       5
+AGTCAGTC        CAGT    3       7
+AGTCAGTC        TCAG    2       6
 >seq2
-AGGCAGTC	AGGC	0	4
-AGGCAGTC	GGCA	1	5
-AGGCAGTC	GCAG	2	6
-AGGCAGTC	CAGT	3	7
-ATATATGA	TATG	3	7
-ATATATGA	ATAT	0	4
-ATATATGA	TATA	1	5
-
+AGGCAGTC        CAGT    3       7
+AGGCAGTC        GGCA    1       5
+AGGCAGTC        AGGC    0       4
+AGGCAGTC        GCAG    2       6
 ```
 
 Gaurav Sablok
