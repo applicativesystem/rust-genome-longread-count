@@ -1,14 +1,10 @@
 mod args;
 use args::KmeroriginArgs;
 use clap::Parser;
-/*
-use std::fs::read_to_string;
-use std::io;
-use std::io::prelude::*;
-use std::io::BufReader;
+use std::fs::File;
+use std::io::{Write, BufReader, BufRead};
 use std::collections::HashSet;
-*/
-
+#[allow(dead_code)]
 /*
  *Author Gaurav Sablok
  *Universitat Potsdam
@@ -16,184 +12,78 @@ use std::collections::HashSet;
 
  * A kmer origin finding faster than the recent implementation of the recent implementation
  * Back to sequences: Find the origin of 𝑘-mers DOI: 10.21105/joss.07066.
- *
- * I implemented the rust async programming to index the kmer first over a window size and then
- * use that to make the set of the kmers, so that you have less search space and using that to
- * search the kmer in the file provided
- *
- * it only searchers for the unique hashes and their location. to make it even faster, i am also
- * implementing a async programming later today.
- *
- * it support genome and short and long illumina reads.
+ * To make it faster, it first uses the kmer iterations to make the kmer and then it uses the 
+ * the uniques hashes to search across the given file. This outputs a table showing the sequence, 
+ * kmer and the start and the end position. 
  * */
 
-fn main()  {
+fn main() {
 
     let args = KmeroriginArgs::parse();
-    dbg!(args);
+    kmer_fasta(args.fastafile_arg, args.kmer_arg);
 }
 
-/*
-fn genome_file(args.fastafile_arg: &str, args.kmers_arg: usize) -> Result<Vec<&str>,_> {
-    let header: Vec<&str> = vec![];
-    let sequence:Vec<&str> = vec![];
-    for line in read_to_string(path).unwrap().lines() {
-    let expect_line = line
-        .expect("line not present");
-    if expect_line.starts_with(">") {
-        header.push(&expect_line.to_string())
-    }
-    if ! expect_line.starts_with(">") {
-        sequence.push(&expect_line.to_string())
-    }
-    }
-
-    let sequence_iter:Vec<&str> = vec![];
-
-    for i in 0..sequence.len() {
-        let intermediate: &str = sequence_iter[i];
-        for j in 0..intermediate.len() - &kmer {
-            sequence_iter.push(&intermediate[j..j+kmer])
-    }
-    }
-
-    let hash_kmer: HashSet<_> = sequence_iter.iter().collect();
-    let mut filew = File::create("kmerunique.txt");
-    for i in &sequence_iter {
-    filew.write_all(i.bytes())
-    }
-
-    let hash_check:Vec<&str> = vec![];
-
-    let file = File::open("kmeruniqe.txt");
-    let hash_read = BufReader::new(file);
-    for i in hash_read.lines(){
-        let line = i.expect("empty line");
-        hash_check.push(i)
-    }
-    for i in 0..sequence.len() {
-        for j in 0..hash_check.len() {
-        let has_store:Vec<_> = sequence[i].match_indices(hash_check[j]).collect();
-        let f = File::create("searchedhashes.txt");
-        for i in 0..has_store.len(){
-            f.write_all(has_store[i].0.as_bytes(), has_store[i].1.as_bytes(), has_store[i].0+hash_check[j].len().as_bytes())
+fn kmer_fasta(path: String, kmer:usize) {
+    let f = File::open(&path).expect("file not present");
+    let read = BufReader::new(f);
+    for i in read.lines() {
+        let line = i
+                   .expect("line not present");
+        let mut header: Vec<&str> = vec![];
+        let mut sequence:Vec<&str> = vec![];
+        if line.starts_with(">") {
+            header.push(&line)
         }
-      }
-   }
-    Ok(())
-}
-
-
-fn longread_file(path: &str, kmer: usize) -> Result<Vec<&str>,_> {
-    let file_open = File::open(&path);
-    let header: Vec<&str> = vec![];
-    let sequence:Vec<&str> = vec![];
-    let file_read = BufReader::new(file_open);
-    for line in file_read.lines(){
-    let expect_line = line
-        .expect("line not present");
-    if expect_line.starts_with("@") {
-        let line:&str = expect_line.
-            split(" ")
-            .replace("@", "")
-            .collect();
-        header.push(&line[0])
-    }
-    if ! expect_line.starts_with("@") {
-        sequence.push(&expect_line)
-    }
-    }
-
-    let sequence_iter:Vec<&str> = vec![];
-
-    for i in 0..sequence.len() {
-        let intermediate: &str = sequence_iter[i];
-        for j in 0..intermediate.len() - &kmer {
-            sequence_iter.push(&intermediate[j..j+kmer])
-    }
-    }
-
-    let hash_kmer: HashSet<_> = sequence_iter.iter().collect();
-    let mut filew = File::create("kmerunique.txt");
-    for i in &sequence_iter {
-    filew.write_all(i.bytes())
-    }
-
-    let hash_check:Vec<&str> = vec![];
-
-    let file = File::open("kmeruniqe.txt");
-    let hash_read = BufReader::new(file);
-    for i in hash_read.lines(){
-        let line = i.expect("empty line");
-        hash_check.push(i)
-    }
-
-    for i in 0..sequence.len() {
-        for j in 0..hash_check.len() {
-        let has_store:Vec<_> = sequence[i].match_indices(hash_check[j]).collect();
-        let f = File::create("searchedhashes.txt");
-        for i in 0..has_store.len(){
-            f.write_all(has_store[i].0.as_bytes, has_store[i].1.as_bytes(), has_store[i].0+hash_check[j].len().as_bytes())
-        }
-      }
-   }
-    Ok(())
-}
-
-
-fn illumina_file(path: &str, kmer: usize) -> Result<(),&'static Vec<&str>> {
-    let file_open = File::open(&path);
-    let header: Vec<&str> = vec![];
-    let sequence:Vec<&str> = vec![];
-    let file_read = BufReader::new(file_open);
-    for line in file_read.lines(){
-    let expect_line = line
-        .expect("line not present");
-    if expect_line.starts_with("@") {
-        let line:&str = expect_line.
-            split(" ")
-            .replace("@", "")
-            .collect();
-        header.push(&line[0])
-    }
-    if  expect_line.starts_with("A") || expect_line.starts_with("T") || expect_line.starts_with("G") || expect_line.starts_with("C") {
-        sequence.push(&expect_line)
-    }
-    }
-
-    let sequence_iter:Vec<&str> = vec![];
-
-    for i in 0..sequence.len() {
-        let intermediate: &str = sequence_iter[i];
-        for j in 0..intermediate.len() - &kmer {
-            sequence_iter.push(&intermediate[j..j+kmer])
-    }
-    }
-
-    let hash_kmer: HashSet<_> = sequence_iter.iter().collect();
-    let mut filew = File::create("kmerunique.txt");
-    for i in &sequence_iter {
-    filew.write_all(i.bytes())
-    }
-
-    let hash_check:Vec<&str> = vec![];
-
-    let file = File::open("kmeruniqe.txt");
-    let hash_read = BufReader::new(file);
-    for i in hash_read.lines(){
-        let line = i.expect("empty line");
-        hash_check.push(i)
-    }
-
+        if !line.starts_with(">") {
+            sequence.push(&line)
+        }  
+        let mut sequence_iter:Vec<&str> = vec![];
         for i in 0..sequence.len() {
-        for j in 0..hash_check.len() {
-        let has_store:Vec<_> = sequence[i].match_indices(hash_check[j]).collect();
-        let f = File::create("searchedhashes.txt");
-        for i in 0..has_store.len(){
-            f.write_all(has_store[i].0.as_bytes(), has_store[i].1.as_bytes(), has_store[i].0+hash_check[j].len().as_bytes())
+            let i = sequence[i]; 
+            for j in 0..i.len() - &kmer {
+                sequence_iter.push(&i[j..j+&kmer])
         }
+       let hash_kmer: HashSet<_> = sequence_iter.iter().collect();
+      let mut finalvec: Vec<&str> = Vec::new();
+      for i in hash_kmer.into_iter() {
+            finalvec.push(i)
+        }
+        let mut path = File::create("kmeruniquefasta.txt").expect("file not present");
+        for i in finalvec.iter() {
+            write!(path, "{}\n", i.to_string());
       }
-   }
-    Ok(())
-}
-*/
+       let mut mutunique = Vec::new(); 
+       let uniquehold = File::open("kmeruniquefasta.txt").expect("file not present");
+       let uniqueread = BufReader::new(uniquehold);
+       for i in uniqueread.lines() {
+         let appendline = i.expect("line not present");
+         mutunique.push(appendline)
+       }
+       //println!("{:?}", mutunique);
+       #[derive(Debug)]
+       struct VecStore {
+        id: String,
+        kmer: String, 
+        numberstart: usize,
+        numberend : usize,
+       }
+       let mut indexstorestart = Vec::new();   
+        for i in sequence.iter() {
+            for j in mutunique.iter() {
+                let indexout = i.find(j).unwrap();
+                let indexoutend = i.find(j).unwrap()+j.len();
+                indexstorestart.push(VecStore {id: i.to_string(), 
+                      kmer: j.to_string(),
+                      numberstart:indexout, 
+                      numberend:indexoutend});
+            }
+        }
+          for line in indexstorestart.iter() {
+           println!("{}\t{}\t{}\t{}", line.id, line.kmer, line.numberstart, line.numberend)
+        }
+    }
+    for j in header.iter() {
+        println!("{}", j)
+    }
+    }
+    }

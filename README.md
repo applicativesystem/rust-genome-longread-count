@@ -1,49 +1,43 @@
 # rust-nuc-iter
 
 - A kmer origin finding faster than the recent implementation of the recent implementation. Back to sequences: Find the origin of 𝑘-mers DOI: 10.21105/joss.07066.
-- I implemented the rust async programming to index the kmer first over a window size and then use that to make the set of the kmers, so that you have less search space and using that to search the kmer in the file provided
-- It only searchers for the unique hashes and their location. to make it even faster.It support genome and short and long illumina reads.
-
+- output a table for the direct ingestion into any graphs. 
+- outputs a sam type file with the distinct count of the kmers and can be used for the jellyfish count. 
+- support both the genome and the longread fasta file. 
 
 ```
-Usage: kmerorigin <COMMAND>
+Usage: kmerorigin <KMER_ARG> <FASTAFILE_ARG>
 
-Commands:
-  genome
-  longread
-  illumina
-  help      Print this message or the help of the given subcommand(s)
+Arguments:
+  <KMER_ARG>       please provide the kmer to be searched for the origin
+  <FASTAFILE_ARG>  please provide the path to be searched for the strings containing the kmer
 
 Options:
   -h, --help     Print help
   -V, --version  Print version
-❯ ./target/debug/kmerorigin genome -h
-Usage: kmerorigin genome [OPTIONS] <KMER>
+```
+- a better table for direct ingestion into the graphs also to make a jellyfish count. 
 
-Arguments:
-  <KMER>
+```
+./target/debug/kmerorigin 4 ./sample-files/fastafile.fasta
+>seq1
+AGTCAGTC	TCAG	2	6
+AGTCAGTC	AGTC	0	4
+AGTCAGTC	GTCA	1	5
+AGTCAGTC	CAGT	3	7
+AGTCAGTT	AGTC	0	4
+AGTCAGTT	GTCA	1	5
+AGTCAGTT	TCAG	2	6
+AGTCAGTT	CAGT	3	7
+>seq2
+AGGCAGTC	AGGC	0	4
+AGGCAGTC	GGCA	1	5
+AGGCAGTC	GCAG	2	6
+AGGCAGTC	CAGT	3	7
+ATATATGA	TATG	3	7
+ATATATGA	ATAT	0	4
+ATATATGA	TATA	1	5
 
-Options:
-  -p, --path <PATH>
-  -h, --help         Print help
-❯ ./target/debug/kmerorigin illumina -h
-Usage: kmerorigin illumina [OPTIONS] <KMER>
-
-Arguments:
-  <KMER>
-
-Options:
-  -p, --path <PATH>
-  -h, --help         Print help
-❯ ./target/debug/kmerorigin longread -h
-Usage: kmerorigin longread [OPTIONS] <KMER>
-
-Arguments:
-  <KMER>
-
-Options:
-  -p, --path <PATH>
-  -h, --help         Print help
 ```
 
 Gaurav Sablok
