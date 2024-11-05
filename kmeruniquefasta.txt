@@ -1,4 +1,8 @@
-CAGT
-GGCA
-AGGC
-GCAG
+TA
+AG
+CT
+AA
+AT
+TT
+AC
+GT
