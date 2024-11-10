@@ -2,9 +2,11 @@
 name = "kmerorigin"
 version = "0.1.0"
 edition = "2021"
+readme = "README.md"
+license = "MIT"
+description = "crate for estimation of the origin of the kmers"
+homepage = "https://github.com/codecreatede/rust-genome-longread-count"
+repository = "https://github.com/codecreatede/rust-genome-longread-count"
 
 [dependencies]
 clap = { version = "4.5.20", features = ["derive"] }
-cmd_lib = "1.9.5"
-svg_fmt = "0.4.3"
-arraytools = "0.1.5"
